@@ -55,6 +55,7 @@ CREATE TABLE `hit` (
 
 CREATE TABLE `request` (
   `Req_Id` int(11) NOT NULL,
+  `word` text NOT NULL COMMENT 'Angefragtes Wort zur Übersetzung',
   `transdir` text NOT NULL COMMENT 'Richtung der Übersetzung'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
