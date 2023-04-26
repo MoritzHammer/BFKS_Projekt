@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { first } from 'rxjs';
-import { abfrage, endpoints } from 'src/services/Endpoints';
-import { RequestHandler } from 'src/services/RequestHandler';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +10,10 @@ export class AppComponent {
   
 sprachen: String[];
 
-  constructor(){
-    RequestHandler.handleRequest(abfrage, [["l", "deen"], ["q", "Hallo"]]).pipe(first()).subscribe((x) => {
-      console.log(x);
-      console.log("Request fertig");
-      
-      
+  constructor(private http: HttpClient){
+    
+    this.http.get<any>("http://localhost:3000/request").subscribe((result) => {
+      console.log(result);
     })
   }
 
