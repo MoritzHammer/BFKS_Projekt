@@ -3,6 +3,11 @@ import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
+interface Word {
+  word: string,
+  lang: string,
+}
+
 @Component({
     selector: "frontpage",
     templateUrl: "./frontpage.component.html",
@@ -11,7 +16,8 @@ import {map, startWith} from 'rxjs/operators';
   export class Frontpage implements OnInit{
     
     myControl = new FormControl('');
-    options: string[] = ['One', 'Two', 'Three'];
+    options: string[] = this.getSavedWords();
+    languages: string[] = ["Deutsch", "Englisch"];
     filteredOptions!: Observable<string[]>;
   
     ngOnInit() {
@@ -25,5 +31,14 @@ import {map, startWith} from 'rxjs/operators';
       const filterValue = value.toLowerCase();
   
       return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+
+    getSavedWords(): string[]{
+      let saved: string[] = ["Test", "Lukas", "Moritz", "David"];
+      return saved;
+    }
+
+    send(){
+      
     }
 }

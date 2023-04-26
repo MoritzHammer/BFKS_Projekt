@@ -1,15 +1,60 @@
-<form class="example-form">
-  <mat-form-field class="example-full-width" appearance="fill">
-    <mat-label>Number</mat-label>
-    <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl"
-      [matAutocomplete]="auto">
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-        {{option}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
-  <button mat-raised-button>skdjfh</button>
-</form>
+<mat-toolbar color="primary">
+  <span>Pons Klon</span>
+</mat-toolbar>
 
-<button mat-raised-button>sdfdsf</button>
+<div class="row">
+  <div class="column column-1">
+    <form class="example-form">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Translation</mat-label>
+        <input type="text" placeholder="Pick or write a word to translate" aria-label="Number" matInput
+          [formControl]="myControl" [matAutocomplete]="auto">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div class="column column-2">
+    <form class="example-form">
+      <mat-form-field>
+        <mat-label>From</mat-label>
+        <mat-select appearance="fill">
+          <mat-option *ngFor="let option of languages" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <div class="column column-3">
+    <form class="example-form">
+      <mat-form-field>
+        <mat-label>To</mat-label>
+        <mat-select appearance="fill">
+          <mat-option *ngFor="let option of languages" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="column column-4">
+    <button mat-fab color="primary" aria-label="Send" (click)="send">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-divider></mat-divider>
+<mat-list role="list">
+  <mat-list-item role="listitem">Word 1</mat-list-item>
+  <mat-list-item role="listitem">Word 2</mat-list-item>
+  <mat-list-item role="listitem">Word 3</mat-list-item>
+</mat-list>
+
+<mat-divider></mat-divider>
