@@ -1,24 +1,50 @@
+mat-toolbar {
+  margin: 0px 0px 50px 0px;
+}
+
+button {
+    margin: 0px 5px;
+}
+
 mat-divider {
   margin: 25px;
 }
 
-.example-form {
+mat-card {
+  margin: 25px 25px 30px 25px;
+  background-color: #1b263b;
+  color: white;
+}
+
+.list-item {
+  color: white;
+}
+
+.autocomplete-form {
   margin: 15px;
-  min-width: 2000px;
+  min-width: 150px;
   max-width: 500px;
   width: 100%;
 }
 
-.column {
-  float: left;
-  position: relative;
-  width: 25%;
-  box-sizing: border-box;
+.language-form {
+  margin: 10px;
+  min-width: 150px;
+  max-width: 300px;
+  width: 100%;
 }
 
-.row:after {
-  content: "";
-  margin-top: 20%;
-  display: table;
-  clear: both;
+.column {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }

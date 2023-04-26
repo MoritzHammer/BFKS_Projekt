@@ -12,7 +12,9 @@ import { MatSelectModule } from "@angular/material/select";
 import {MatDividerModule} from '@angular/material/divider';
 import { AppRoutingModule } from './app-routing.module';
 import {MatListModule} from '@angular/material/list';
-import {MatToolbarModule} from '@angular/material/toolbar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
+
 
 import { AppComponent } from './app.component';
 import { Frontpage } from './frontpage/frontpage.component';
@@ -39,6 +41,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatDividerModule,
     MatListModule,
     MatToolbarModule,
+    MatCardModule,
     BrowserAnimationsModule
 
   ],
