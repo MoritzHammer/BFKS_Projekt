@@ -1,0 +1,65 @@
+<mat-toolbar class="header-toolbar" color="primary">
+  <span>Pons Klon</span>
+</mat-toolbar>
+
+<div class="container">
+    <div class="column">
+      <form class="autocomplete-form">
+        <mat-form-field class="example-full-width" appearance="fill" style="width:24vw">
+          <mat-label>Translate</mat-label>
+          <input name="autocompletionField" type="text" placeholder="Pick or write a word to translate" aria-label="Number" matInput
+                 [formControl]="autocompletionField" [matAutocomplete]="auto" required >
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+              {{option}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="column">
+      <form class="language-form">
+        <mat-form-field  style="width:12vw">
+          <mat-label>From</mat-label>
+          <mat-select name="selectLanguageFrom" appearance="fill" [(ngModel)]="selectedLanguageFrom" required (selectionChange)="checkAllInfo()" [disabled]=!wordFromPons>
+            <mat-option *ngFor="let languageFrom of languagesFrom" [value]="languageFrom">
+              {{languageFrom}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+
+      <form class="language-form">
+        <mat-form-field style="width:12vw">
+          <mat-label>To</mat-label>
+          <mat-select name="selectLanguageTo" appearance="fill" [(ngModel)]="selectedLanguageTo" required (selectionChange)="checkAllInfo()">
+            <mat-option *ngFor="let languageTo of languagesTo" [value]="languageTo">
+              {{languageTo}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <div class="column">
+      <button mat-fab color="primary" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided>
+        <mat-icon>language</mat-icon>
+      </button>
+
+      <button mat-fab color="warn" aria-label="Clear" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+</div>
+
+<div class="translation">
+  <mat-card>
+    <mat-card-title>{{listHeader}}</mat-card-title>
+    <mat-card-content>
+      <mat-list role="list">
+        <mat-list-item class="list-item" role="listitem" *ngFor="let item of responses">{{item}}</mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>
