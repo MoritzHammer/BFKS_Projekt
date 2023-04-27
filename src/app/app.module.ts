@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button'; 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -10,6 +9,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from "@angular/material/select";
 import {MatDividerModule} from '@angular/material/divider';
+import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
 import { AppRoutingModule } from './app-routing.module';
 import {MatListModule} from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -19,6 +19,7 @@ import { MatCardModule } from '@angular/material/card';
 import { AppComponent } from './app.component';
 import { Frontpage } from './frontpage/frontpage.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -42,8 +43,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatListModule,
     MatToolbarModule,
     MatCardModule,
-    BrowserAnimationsModule
-
+    BrowserAnimationsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
