@@ -94,6 +94,7 @@ CREATE TABLE `translation` (
 --
 ALTER TABLE `arab`
   ADD PRIMARY KEY (`Arab_Id`),
+  MODIFY Arab_Id INTEGER NOT NULL AUTO_INCREMENT,
   ADD KEY `Arab_Rom_Id` (`Arab_Rom_Id`);
 
 --
@@ -101,19 +102,22 @@ ALTER TABLE `arab`
 --
 ALTER TABLE `hit`
   ADD PRIMARY KEY (`Hit_Id`),
+  MODIFY Hit_Id INTEGER NOT NULL AUTO_INCREMENT,
   ADD KEY `Hit_Req_Id` (`Hit_Req_Id`);
 
 --
 -- Indizes für die Tabelle `request`
 --
 ALTER TABLE `request`
-  ADD PRIMARY KEY (`Req_Id`);
+  ADD PRIMARY KEY (`Req_Id`),
+  MODIFY Req_Id INTEGER NOT NULL AUTO_INCREMENT;
 
 --
 -- Indizes für die Tabelle `rom`
 --
 ALTER TABLE `rom`
   ADD PRIMARY KEY (`Rom_Id`),
+  MODIFY Rom_Id INTEGER NOT NULL AUTO_INCREMENT,
   ADD KEY `Rom_Hit_Id` (`Rom_Hit_Id`);
 
 --
@@ -121,6 +125,7 @@ ALTER TABLE `rom`
 --
 ALTER TABLE `translation`
   ADD PRIMARY KEY (`Translation_Id`),
+  MODIFY Translation_Id INTEGER NOT NULL AUTO_INCREMENT,
   ADD KEY `Translation_Arab_Id` (`Translation_Arab_Id`);
 
 --
