@@ -3,13 +3,22 @@ import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
-import { of } from 'rxjs';
 
 
 interface Word {
   word: string,
   lang: string,
   description: string
+}
+
+interface Learning {
+  input: string,
+  icon: string
+}
+
+interface LearnWords {
+  word: Word,
+  learn: Learning
 }
 
 interface Language {
@@ -37,6 +46,8 @@ export class Frontpage implements OnInit {
 
   wordFromPons = true;
   allInfoProvided = false;
+  languageInfoProvided = false;
+  isLearn = false;
 
   listHeader = "Translation";
   responseWords: Word[] = [];
@@ -44,11 +55,12 @@ export class Frontpage implements OnInit {
   dataBaseResponses: string[];
   autocompletion: any;
 
+  learnWords: LearnWords[] = [];
+
     filteredOptions!: Observable<string[]>;
   
     ngOnInit() {
       this.dataBaseResponses = this.getDatabaseResponseWords();
-      console.log(this.dataBaseResponses);
       this.autocompletion = this.dataBaseResponses;
       this.filteredOptions = this.autocompletionField.valueChanges.pipe(
         startWith(''),
@@ -93,22 +105,29 @@ export class Frontpage implements OnInit {
   }
 
   checkAllInfo() {
-    if (this.autocompletionField.value != "" && this.selectedLanguageFrom.name != "" && this.selectedLanguageTo.name != "") this.allInfoProvided = true;
+    if (this.autocompletionField.value != "" && this.selectedLanguageFrom.name != "" && this.selectedLanguageTo.name != "") {this.allInfoProvided = true; this.languageInfoProvided = true}
+    else if (this.selectedLanguageFrom.name != "" && this.selectedLanguageTo.name != "") this.languageInfoProvided = true;
   }
 
   learn() {
-    const fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
+    let fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
     this.Api("/lernfeld?l=" + fromto);
-    this.listHeader = "Learning '" + this.selectedLanguageTo.name + ":";
+    this.listHeader = "Learning " + this.selectedLanguageTo.name + ":";
+    this.selectedLanguageToItem = this.selectedLanguageTo;
+    this.selectedLanguageFromItem = this.selectedLanguageFrom;
+    this.isLearn = true;
+    this.wordFromPons = false;
 
   }
 
   send() {
-    const fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
-    this.Api("?/requestq=" + this.autocompletionField.value + "&l=" + fromto);
+    let fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
+    this.Api("/request?q=" + this.autocompletionField.value + "&l=" + fromto);
     this.listHeader = "Translation of '" + this.autocompletionField.value + "' in " + this.selectedLanguageTo.name + ":";
     this.selectedLanguageToItem = this.selectedLanguageTo;
     this.selectedLanguageFromItem = this.selectedLanguageFrom;
+    this.wordFromPons = true;
+    this.isLearn = false;
   }
 
   clear() {
@@ -131,7 +150,7 @@ export class Frontpage implements OnInit {
     if (this.response.origin == "db"){
       this.DataBaseParsing();
     }
-    else if (this.response.origin == "db"){
+    else if (this.response.origin == "pons"){
       this.PonsParsing();
     }
     else this.LearnParsing();
@@ -141,22 +160,57 @@ export class Frontpage implements OnInit {
     this.responseWords = [];
     let values = this.response.value;
     values.forEach(element => {
-      console.log(element.target);
       let word: Word = 
-      { word: element.word.replaceAll("(?i)<td[^>]*>", " ").replaceAll("\\s+", " ").replaceAll(/(<([^>]+)>)/gi, '').trim(), 
+      { word: element.word, 
         lang: element.transdir,
-        description: element.target.replaceAll("(?i)<td[^>]*>", " ").replaceAll("\\s+", " ").replaceAll(/(<([^>]+)>)/gi, '').trim()
+        description: element.target
       }
       this.responseWords.push(word);
     });
   }
 
   PonsParsing(){
-    this.send();
+    console.log(this.response);
+    let arabs = this.response.value[0].hits[0].roms[0].arabs;
+    arabs.forEach(element => {
+      console.log(element.header);
+      let word: Word = 
+      { word: element.header, 
+        lang: element.translations[0].source,
+        description: element.translations[0].target
+      }
+      this.responseWords.push(word);
+    });
   }
 
   LearnParsing(){
-    console.log(this.response);
+    this.responseWords.length = 0;
+    this.learnWords.length = 0;
+    let values = this.response;
+    values.forEach(element => {
+      let word: Word = {
+        word: element.word.replaceAll("\\s+", " ").replaceAll(/(<([^>]+)>)/gi, '').trim(), 
+        lang: "",
+        description: element.target.replaceAll("\\s+", " ").replaceAll(/(<([^>]+)>)/gi, '').trim()
+      }
+      let learn: Learning = {
+        input: "",
+        icon: "clear"
+      }
+      this.learnWords.push({word: word, learn: learn});
+      this.responseWords.push(word);
+    });
+    console.log(this.learnWords);
+    if(this.learnWords.length == 0) this.listHeader = "No data in database. Please search for words in that languages";
+  }
+
+  ChangeItem(event: any, item:LearnWords){
+    console.log(item.word.description, item.learn.input);
+      if (item.word.description.toLowerCase() == item.learn.input.toLowerCase()){
+            item.learn.icon = "done";
+          }
+      else item.learn.icon = "clear";
+      console.log(item.learn.icon);
   }
 
 }

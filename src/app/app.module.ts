@@ -13,6 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {MatListModule} from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
+import {MatTooltipModule} from '@angular/material/tooltip'; 
 
 
 import { AppComponent } from './app.component';
@@ -41,6 +42,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatDividerModule,
     MatListModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatCardModule,
     BrowserAnimationsModule,
     HttpClientModule

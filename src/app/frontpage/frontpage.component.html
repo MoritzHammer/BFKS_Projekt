@@ -1,80 +1,120 @@
-<mat-toolbar class="header-toolbar" color="primary">
+<mat-toolbar class="header-toolbar">
   <span>Pons Klon</span>
+  <span class="spacer"></span>
+  <a mat-icon-button href="https://www.its-stuttgart.de/">
+    <mat-icon>favorite</mat-icon>
+  </a>
+  <a mat-icon-button href="https://de.pons.com/">
+    <mat-icon>share</mat-icon>
+  </a>
 </mat-toolbar>
 
 <div class="container">
-    <div class="column">
-      <form class="autocomplete-form">
-        <mat-form-field *ngIf="autocompletion" class="example-full-width" appearance="fill" style="width:24vw">
-          <mat-label>Translate</mat-label>
-          <input name="autocompletionField" type="text" placeholder="Pick or write a word to translate" aria-label="Number" matInput
-                 [formControl]="autocompletionField" [matAutocomplete]="auto" required >
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-              {{option}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </form>
-    </div>
+  <div class="column">
+    <form class="autocomplete-form">
+      <mat-form-field *ngIf="autocompletion" class="example-full-width" appearance="fill" style="width:24vw">
+        <mat-label>Translate</mat-label>
+        <input name="autocompletionField" type="text" placeholder="Pick or write a word to translate"
+          aria-label="Number" matInput [formControl]="autocompletionField" [matAutocomplete]="auto" required>
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+  </div>
 
-    <div class="column">
-      <form class="language-form">
-        <mat-form-field  style="width:12vw">
-          <mat-label>From</mat-label>
-          <mat-select name="selectLanguageFrom" appearance="fill" [(ngModel)]="selectedLanguageFrom" required (selectionChange)="checkAllInfo()" [disabled]=!wordFromPons>
-            <mat-option *ngFor="let languageFrom of languagesFrom" [value]="languageFrom">
-              <img alt="" class="img" [src]="languageFrom.flag" height="25">
-              <span>{{languageFrom.name}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
+  <div class="column">
+    <form class="language-form">
+      <mat-form-field style="width:12vw">
+        <mat-label>From</mat-label>
+        <mat-select name="selectLanguageFrom" appearance="fill" [(ngModel)]="selectedLanguageFrom" required
+          (selectionChange)="checkAllInfo()">
+          <mat-option *ngFor="let languageFrom of languagesFrom" [value]="languageFrom">
+            <img alt="" class="img" [src]="languageFrom.flag" height="25">
+            <span>{{languageFrom.name}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
 
-      <form class="language-form">
-        <mat-form-field style="width:12vw">
-          <mat-label>To</mat-label>
-          <mat-select name="selectLanguageTo" appearance="fill" [(ngModel)]="selectedLanguageTo" required (selectionChange)="checkAllInfo()">
-            <mat-option *ngFor="let languageTo of languagesTo" [value]="languageTo">
-              <img alt="" class="img" [src]="languageTo.flag" height="25">
-              <span>{{languageTo.name}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
-    </div>
+    <form class="language-form">
+      <mat-form-field style="width:12vw">
+        <mat-label>To</mat-label>
+        <mat-select name="selectLanguageTo" appearance="fill" [(ngModel)]="selectedLanguageTo" required
+          (selectionChange)="checkAllInfo()">
+          <mat-option *ngFor="let languageTo of languagesTo" [value]="languageTo">
+            <img alt="" class="img" [src]="languageTo.flag" height="25">
+            <span>{{languageTo.name}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
 
-    <div class="column">
-      <button mat-fab color="accent" aria-label="Send" (click)="learn()">
-        <mat-icon>learn</mat-icon>
-      </button>
+  <div class="column">
+    <button mat-fab color="primary" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided
+      matTooltip="Translate word">
+      <mat-icon>g_translate</mat-icon>
 
-    <div class="column">
-      <button mat-fab color="primary" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided>
-        <mat-icon>language</mat-icon>
-      </button>
+    </button>
 
-      <button mat-fab color="warn" aria-label="Clear" (click)="clear()">
-        <mat-icon>clear</mat-icon>
-      </button>
-    </div>
+    <button mat-fab color="primary" aria-label="Send" (click)="learn()" [disabled]=!languageInfoProvided
+      matTooltip="Learn language">
+      <mat-icon>compare_arrows</mat-icon>
+    </button>
+
+    <button mat-fab color="warn" aria-label="Clear" (click)="clear()" matTooltip="Clear Fields">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
 </div>
 
 <div class="translation">
   <mat-card>
     <mat-card-title>{{listHeader}}</mat-card-title>
-    <mat-card-content>
+
+    <mat-card-content *ngIf="wordFromPons">
       <mat-list role="list">
+
         <mat-list-item class="list-item" role="listitem" *ngFor="let item of responseWords">
-          <div class = "list_word">
-           <img alt="" class="img" [src]="selectedLanguageFromItem.flag" height="25">{{item.word}}
+
+          <div class="list_word">
+            <img alt="" class="img" [src]="selectedLanguageFromItem.flag" height="25">
+          </div>  
+          <div class="list_word" [innerHTML]="item.word"></div>
+          
+          <div class="list_icon"> <mat-icon>compare_arrows</mat-icon></div>
+          <div class="list_trans">
+            <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
           </div>
-          <div class = "list_icon"> <mat-icon>compare_arrows</mat-icon></div>
-          <div class = "list_trans">
-           <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">{{item.description}}
-          </div>
+            <div class="list_trans" [innerHTML]="item.description"></div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+
+    <mat-card-content *ngIf="isLearn">
+      <mat-list role="list">
+        <mat-list-item class="list-item" role="listitem" *ngFor="let item of learnWords">
+              <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
+              <mat-form-field class="learn_form_field" appearance="outline">
+                <mat-label>{{item.word.word}}</mat-label>
+                <input matInput type="text" [(ngModel)]="item.learn.input" (input)="ChangeItem($event, item)">
+              </mat-form-field>
+              <div class="list_icon">
+              <mat-icon>{{item.learn.icon}}</mat-icon>
+            </div>
         </mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>
 </div>
+
+<mat-toolbar class="bottom_toolbar">
+  <span> von Lukas, David & Moritz </span>
+  <span class="spacer"></span>
+  <a mat-icon-button href="https://de.wikipedia.org/wiki/Urheberrecht">
+    <mat-icon>copyright</mat-icon>
+  </a>
+</mat-toolbar>

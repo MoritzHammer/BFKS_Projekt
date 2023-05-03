@@ -1,5 +1,7 @@
 mat-toolbar {
   margin: 0px 0px 50px 0px;
+  background-color: #0A0;
+  color: white;
 }
 
 button {
@@ -12,24 +14,32 @@ mat-divider {
 
 mat-card {
   margin: 25px 25px 30px 25px;
-  background-color: #1b263b;
-  color: white;
+  background-color: rgb(233, 233, 233);
+  border: 2px solid black;
 }
 
 .list-item {
-  color: white;
+  margin: 15px;
 }
 
 .list_word {
   margin: 5px;
+  flex-direction: row;
+  vertical-align: middle;
+  justify-content: center;
 }
 
 .list_trans {
   margin: 5px;
+  flex-direction: row;
+  vertical-align: middle;
+  justify-content: center;
 }
 
 .list_icon {
   margin: 0px 10px 0px 20px;
+  vertical-align: middle;
+  justify-content: center;
 }
 
 .autocomplete-form {
@@ -55,6 +65,14 @@ mat-card {
   width: 100%;
 }
 
+.list_column {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  color: white;
+}
+
 .container {
   width: 100%;
   display: flex;
@@ -63,5 +81,22 @@ mat-card {
 
 .img {
   vertical-align: middle;
+  justify-content: center;
   margin-right: 8px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.header_toolbar {
+  margin: 0px 0px 50px 0px;
+}
+
+.bottom_toolbar {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  bottom: 0;
+  margin: 50px 0px 0px 0px;
 }
