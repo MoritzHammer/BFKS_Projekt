@@ -27,6 +27,20 @@ app.get("/autocomplete", (req, res) => {
 })
 
 
+app.get("/lernfeld", (req, res) => {
+
+    connection.execute('Select word from request where ', function (err, rows, fields) {
+        if (err == undefined) {
+            res.send(rows);
+        } else {
+            res.status(500).send('Internal Server Error');
+        }
+    })
+
+
+
+})
+
 
 app.get("/request", (req, res) => {
     var resultset = "";
