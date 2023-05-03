@@ -16,15 +16,29 @@ const connection = mysql.createConnection({
 const port = 3000;
 app.use(cors());
 
+app.get("/autocomplete", (req, res) => {
+    
+    connection.execute('Select distinct word from request', function (err, rows, fields) {
+        if(err == undefined){
+            res.send(rows);
+        } else {
+            res.status(500).send('Internal server Error');
+        }
+    })
+})
+
+
+
 app.get("/request", (req, res) => {    
     var resultset = "";
     var erg = [];
 
     connection.execute(
-        'SELECT * FROM `request` WHERE `word` like ? AND `transdir` like ?',
+        'SELECT word, transdir, target, language FROM REQUEST, HIT, ROM, ARAB, TRANSLATION WHERE REQUEST.Req_Id = HIT.Hit_Req_Id AND HIT.Hit_Id = ROM.Rom_Hit_id AND ROM.Rom_Id = ARAB.Arab_Rom_Id AND ARAB.Arab_Id = TRANSLATION.Translation_Arab_Id AND word like ? AND transdir like ?',
         [req.query.q, req.query.l],
         function(err, results, fields) {
             erg = results;
+            console.log(erg);
             var resobject = {}
             if(erg.length == 0){
                 https.get({
@@ -57,6 +71,9 @@ app.get("/request", (req, res) => {
                     });
                 });
             } else {
+
+
+
                 resobject.origin = "db";
                 resobject.value = erg;
                 res.send(resobject);
