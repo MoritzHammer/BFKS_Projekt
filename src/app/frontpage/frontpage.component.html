@@ -24,7 +24,8 @@
           <mat-label>From</mat-label>
           <mat-select name="selectLanguageFrom" appearance="fill" [(ngModel)]="selectedLanguageFrom" required (selectionChange)="checkAllInfo()" [disabled]=!wordFromPons>
             <mat-option *ngFor="let languageFrom of languagesFrom" [value]="languageFrom">
-              {{languageFrom}}
+              <img alt="" class="img" [src]="languageFrom.flag" height="25">
+              <span>{{languageFrom.name}}</span>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -35,7 +36,8 @@
           <mat-label>To</mat-label>
           <mat-select name="selectLanguageTo" appearance="fill" [(ngModel)]="selectedLanguageTo" required (selectionChange)="checkAllInfo()">
             <mat-option *ngFor="let languageTo of languagesTo" [value]="languageTo">
-              {{languageTo}}
+              <img alt="" class="img" [src]="languageTo.flag" height="25">
+              <span>{{languageTo.name}}</span>
             </mat-option>
           </mat-select>
         </mat-form-field>
