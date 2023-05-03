@@ -2,12 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponseBase } from '@angular/common/http';
+import { of } from 'rxjs';
 
 
 interface Word {
   word: string,
   lang: string,
+  description: string
 }
 
 interface Language {
@@ -35,18 +37,23 @@ export class Frontpage implements OnInit {
   allInfoProvided = false;
 
   listHeader = "Translation";
-  responses: string[] = [];
-  dataBaseResponses: string[] = this.getDatabaseResponseWords();
-  autocompletion = this.dataBaseResponses;
+  responseWords: Word[] = [];
+  response: any;
+  dataBaseResponses: string[];
+  autocompletion: any;
 
     filteredOptions!: Observable<string[]>;
   
     ngOnInit() {
+      this.dataBaseResponses = this.getDatabaseResponseWords();
+      console.log(this.dataBaseResponses);
+      this.autocompletion = this.dataBaseResponses;
       this.filteredOptions = this.autocompletionField.valueChanges.pipe(
         startWith(''),
         map(value => this._filter(value || '')),
       );
     }
+
   
     private _filter(value: string): string[] {
       const filterValue = value.toLowerCase();
@@ -72,9 +79,14 @@ export class Frontpage implements OnInit {
       return languages;
     }
 
-  getDatabaseResponseWords(): string[] {
-      //TODO: Parse database response and get relevant info
-    let words: string[] = ["Word 1", "Word 2", "Word 2", "Test", "Lukas", "Moritz", "David"];
+  getDatabaseResponseWords() {
+    let words: string[] = [];
+    this.http.get<any>("http://localhost:3000/autocomplete").subscribe((result) => {
+      result.forEach(element => {
+        words.push(element.word);
+        this.dataBaseResponses.push(element.word);
+      });
+  })
     return words;
   }
 
@@ -99,11 +111,38 @@ export class Frontpage implements OnInit {
       //TODO: Send all parameters to the api
       //TODO: Parse api response and get relevant info
       const fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
-    const endpoint = "?q=" + this.autocompletionField.value + "&l=" + fromto;
+      const endpoint = "?q=" + this.autocompletionField.value + "&l=" + fromto;
 
       this.http.get<any>("http://localhost:3000/request" + endpoint).subscribe((result) => {
-      this.responses = result;
+      this.response = result;
+      this.DatabaseOrPons();
     })
 
   }
+
+  DatabaseOrPons(){
+    if (this.response.origin == "db"){
+      this.DataBaseParsing();
+    }
+    else this.PonsParsing();
+  }
+
+  DataBaseParsing(){
+    this.responseWords = [];
+    let values = this.response.value;
+    values.forEach(element => {
+      let word: Word = 
+      { word: element.word, 
+        lang: element.transdir,
+        description: element.target.replaceAll("(?i)<td[^>]*>", " ").replaceAll("\\s+", " ").trim()
+      }
+      this.responseWords.push(word);
+    });
+  }
+
+  PonsParsing(){
+    console.log(this.response);
+
+  }
+
 }

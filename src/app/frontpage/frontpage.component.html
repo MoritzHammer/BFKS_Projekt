@@ -5,7 +5,7 @@
 <div class="container">
     <div class="column">
       <form class="autocomplete-form">
-        <mat-form-field class="example-full-width" appearance="fill" style="width:24vw">
+        <mat-form-field *ngIf="autocompletion" class="example-full-width" appearance="fill" style="width:24vw">
           <mat-label>Translate</mat-label>
           <input name="autocompletionField" type="text" placeholder="Pick or write a word to translate" aria-label="Number" matInput
                  [formControl]="autocompletionField" [matAutocomplete]="auto" required >
@@ -60,7 +60,7 @@
     <mat-card-title>{{listHeader}}</mat-card-title>
     <mat-card-content>
       <mat-list role="list">
-        <mat-list-item class="list-item" role="listitem" *ngFor="let item of responses">{{item}}</mat-list-item>
+        <mat-list-item class="list-item" role="listitem" *ngFor="let item of responseWords">{{item.description}}</mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>

@@ -47,7 +47,7 @@ app.get("/request", (req, res) => {
     var erg = [];
 
     connection.execute(
-        'SELECT word, transdir, target, language FROM REQUEST, HIT, ROM, ARAB, TRANSLATION WHERE REQUEST.Req_Id = HIT.Hit_Req_Id AND HIT.Hit_Id = ROM.Rom_Hit_id AND ROM.Rom_Id = ARAB.Arab_Rom_Id AND ARAB.Arab_Id = TRANSLATION.Translation_Arab_Id AND word like ? AND transdir like ?',
+        'SELECT word, transdir, target, language FROM `request`, `hit`, `translation`, `rom`, `arab` WHERE `request`.Req_Id = `hit`.Hit_Req_Id AND `hit`.Hit_Id = `rom`.Rom_Hit_id AND `rom`.Rom_Id = `arab`.Arab_Rom_Id AND `arab`.Arab_Id = `translation`.Translation_Arab_Id AND word like ? AND transdir like ?', 
         [req.query.q, req.query.l],
         function (err, results, fields) {
             erg = results;
