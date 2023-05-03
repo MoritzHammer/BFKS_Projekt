@@ -38,13 +38,22 @@ export class Frontpage implements OnInit {
   autocompletionField = new FormControl('');
 
   languagesTo: Language[] = this.getLanguages();
-  selectedLanguageTo: Language;
-  selectedLanguageToItem: Language;
-  languagesFrom: Language[] = this.getLanguages();
-  selectedLanguageFrom: Language;
-  selectedLanguageFromItem: Language;
+  selectedLanguageTo: Language = {
+    name: '',
+    short: '',
+    flag: ''
+  };
+  selectedLanguageToItem: Language = this.selectedLanguageTo;
 
-  wordFromPons = true;
+  languagesFrom: Language[] = this.getLanguages();
+  selectedLanguageFrom: Language= {
+    name: '',
+    short: '',
+    flag: ''
+  };
+  selectedLanguageFromItem: Language = this.selectedLanguageFrom;
+
+  wordFromPons = false;
   allInfoProvided = false;
   languageInfoProvided = false;
   isLearn = false;
@@ -105,8 +114,8 @@ export class Frontpage implements OnInit {
   }
 
   checkAllInfo() {
-    if (this.autocompletionField.value != "" && this.selectedLanguageFrom.name != "" && this.selectedLanguageTo.name != "") {this.allInfoProvided = true; this.languageInfoProvided = true}
-    else if (this.selectedLanguageFrom.name != "" && this.selectedLanguageTo.name != "") this.languageInfoProvided = true;
+    if (this.autocompletionField.value != "" && this.selectedLanguageFrom.name != '' && this.selectedLanguageTo.name != '' ) {this.allInfoProvided = true; this.languageInfoProvided = true}
+    else if (this.selectedLanguageFrom.name != '' && this.selectedLanguageTo.name != '' ) this.languageInfoProvided = true;
   }
 
   learn() {
@@ -151,11 +160,19 @@ export class Frontpage implements OnInit {
   DatabaseOrPons(){
     if (this.response.origin == "db"){
       this.DataBaseParsing();
+      this.wordFromPons = true;
+      this.isLearn = false;
     }
     else if (this.response.origin == "pons"){
       this.PonsParsing();
+      this.wordFromPons = true;
+      this.isLearn = false;
     }
-    else this.LearnParsing();
+    else {
+      this.LearnParsing();
+      this.wordFromPons = false;
+      this.isLearn = true;
+    }
   }
 
   DataBaseParsing(){
@@ -172,12 +189,11 @@ export class Frontpage implements OnInit {
   }
 
   PonsParsing(){
-    console.log(this.response);
+    this.responseWords.length = 0;
     let arabs = this.response.value[0].hits[0].roms[0].arabs;
     arabs.forEach(element => {
-      console.log(element.header);
       let word: Word = 
-      { word: element.header, 
+      { word: element.translations[0].source, 
         lang: element.translations[0].source,
         description: element.translations[0].target
       }
@@ -202,17 +218,14 @@ export class Frontpage implements OnInit {
       this.learnWords.push({word: word, learn: learn});
       this.responseWords.push(word);
     });
-    console.log(this.learnWords);
     if(this.learnWords.length == 0) this.listHeader = "No data in database. Please search for words in that languages";
   }
 
   ChangeItem(event: any, item:LearnWords){
-    console.log(item.word.description, item.learn.input);
       if (item.word.description.toLowerCase() == item.learn.input.toLowerCase()){
             item.learn.icon = "done";
           }
       else item.learn.icon = "clear";
-      console.log(item.learn.icon);
   }
 
 }

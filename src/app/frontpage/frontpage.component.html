@@ -15,7 +15,7 @@
       <mat-form-field *ngIf="autocompletion" class="example-full-width" appearance="fill" style="width:24vw">
         <mat-label>Translate</mat-label>
         <input name="autocompletionField" type="text" placeholder="Pick or write a word to translate"
-          aria-label="Number" matInput [formControl]="autocompletionField" [matAutocomplete]="auto" required>
+          aria-label="Number" matInput [formControl]="autocompletionField" [matAutocomplete]="auto">
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
             {{option}}
@@ -57,22 +57,21 @@
     <button mat-fab class="green" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided
       matTooltip="Translate word">
       <mat-icon>g_translate</mat-icon>
-
     </button>
 
     <button mat-fab color="primary" aria-label="Send" (click)="learn()" [disabled]=!languageInfoProvided
-      matTooltip="Learn language">
+      matTooltip="Learn language (Pick both languages)">
       <mat-icon>compare_arrows</mat-icon>
     </button>
 
-    <button mat-fab color="warn" aria-label="Clear" (click)="clear()" matTooltip="Clear Fields">
+    <button mat-fab color="warn" aria-label="Clear" (click)="clear()" matTooltip="Clear fields">
       <mat-icon>clear</mat-icon>
     </button>
   </div>
 </div>
 
 <div class="translation">
-  <mat-card>
+  <mat-card *ngIf="wordFromPons == true || isLearn == true">
     <mat-card-title>{{listHeader}}</mat-card-title>
     <mat-card-content *ngIf="wordFromPons">
       <mat-list role="list">
@@ -84,7 +83,6 @@
           <div class="list_word" [innerHTML]="item.word"></div>
 
           <div class="list_icon"> <mat-icon>compare_arrows</mat-icon></div>
-
           <div class="list_trans">
             <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
           </div>
@@ -98,8 +96,15 @@
       <mat-list role="list">
         <mat-list-item class="list-item" role="listitem" *ngFor="let item of learnWords">
 
-          <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
-          <mat-form-field class="learn_form_field" appearance="outline">
+          <div class="list_word">
+            <img alt="" class="img" [src]="selectedLanguageFromItem.flag" height="25">
+          </div>
+          <div class="list_icon"> <mat-icon>compare_arrows</mat-icon></div>
+          <div class="list_trans">
+            <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
+          </div>
+          
+          <mat-form-field class="learn_form_field">
             <mat-label>{{item.word.word}}</mat-label>
             <input matInput type="text" [(ngModel)]="item.learn.input" (input)="ChangeItem($event, item)">
           </mat-form-field>
