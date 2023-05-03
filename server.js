@@ -38,7 +38,6 @@ app.get("/request", (req, res) => {
         [req.query.q, req.query.l],
         function(err, results, fields) {
             erg = results;
-            console.log(erg);
             console.log(err);
             var resobject = {}
             if(erg.length == 0){
