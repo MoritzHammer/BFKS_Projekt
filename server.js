@@ -29,7 +29,10 @@ app.get("/autocomplete", (req, res) => {
 
 app.get("/lernfeld", (req, res) => {
 
-    connection.execute('Select word from request where ', function (err, rows, fields) {
+    connection.execute(
+        'SELECT word, transdir, target, language FROM `request`, `hit`, `translation`, `rom`, `arab` WHERE `request`.Req_Id = `hit`.Hit_Req_Id AND `hit`.Hit_Id = `rom`.Rom_Hit_id AND `rom`.Rom_Id = `arab`.Arab_Rom_Id AND `arab`.Arab_Id = `translation`.Translation_Arab_Id AND transdir like ?', 
+        [req.query.l],
+        function (err, rows, fields) {
         if (err == undefined) {
             res.send(rows);
         } else {
