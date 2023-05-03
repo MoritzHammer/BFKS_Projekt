@@ -117,6 +117,8 @@ export class Frontpage implements OnInit {
     this.selectedLanguageFromItem = this.selectedLanguageFrom;
     this.isLearn = true;
     this.wordFromPons = false;
+    this.allInfoProvided = false;
+    this.autocompletionField.setValue("");
 
   }
 

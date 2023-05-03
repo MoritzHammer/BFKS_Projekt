@@ -1,4 +1,4 @@
-<mat-toolbar class="header-toolbar">
+<mat-toolbar class="header-toolbar green">
   <span>Pons Klon</span>
   <span class="spacer"></span>
   <a mat-icon-button href="https://www.its-stuttgart.de/">
@@ -54,7 +54,7 @@
   </div>
 
   <div class="column">
-    <button mat-fab color="primary" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided
+    <button mat-fab class="green" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided
       matTooltip="Translate word">
       <mat-icon>g_translate</mat-icon>
 
@@ -74,22 +74,22 @@
 <div class="translation">
   <mat-card>
     <mat-card-title>{{listHeader}}</mat-card-title>
-
     <mat-card-content *ngIf="wordFromPons">
       <mat-list role="list">
-
         <mat-list-item class="list-item" role="listitem" *ngFor="let item of responseWords">
 
           <div class="list_word">
             <img alt="" class="img" [src]="selectedLanguageFromItem.flag" height="25">
-          </div>  
+          </div>
           <div class="list_word" [innerHTML]="item.word"></div>
-          
+
           <div class="list_icon"> <mat-icon>compare_arrows</mat-icon></div>
+
           <div class="list_trans">
             <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
           </div>
-            <div class="list_trans" [innerHTML]="item.description"></div>
+          <div class="list_trans" [innerHTML]="item.description"></div>
+
         </mat-list-item>
       </mat-list>
     </mat-card-content>
@@ -97,21 +97,24 @@
     <mat-card-content *ngIf="isLearn">
       <mat-list role="list">
         <mat-list-item class="list-item" role="listitem" *ngFor="let item of learnWords">
-              <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
-              <mat-form-field class="learn_form_field" appearance="outline">
-                <mat-label>{{item.word.word}}</mat-label>
-                <input matInput type="text" [(ngModel)]="item.learn.input" (input)="ChangeItem($event, item)">
-              </mat-form-field>
-              <div class="list_icon">
-              <mat-icon>{{item.learn.icon}}</mat-icon>
-            </div>
+
+          <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">
+          <mat-form-field class="learn_form_field" appearance="outline">
+            <mat-label>{{item.word.word}}</mat-label>
+            <input matInput type="text" [(ngModel)]="item.learn.input" (input)="ChangeItem($event, item)">
+          </mat-form-field>
+
+          <div class="list_icon">
+            <mat-icon>{{item.learn.icon}}</mat-icon>
+          </div>
+          
         </mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>
 </div>
 
-<mat-toolbar class="bottom_toolbar">
+<mat-toolbar class="bottom_toolbar green">
   <span> von Lukas, David & Moritz </span>
   <span class="spacer"></span>
   <a mat-icon-button href="https://de.wikipedia.org/wiki/Urheberrecht">
