@@ -25,7 +25,7 @@ app.get("/request", (req, res) => {
         [req.query.q, req.query.l],
         function(err, results, fields) {
             erg = results;
-
+            var resobject = {}
             if(erg.length == 0){
                 https.get({
                     hostname: "api.pons.com",
@@ -38,21 +38,33 @@ app.get("/request", (req, res) => {
                     method: "GET"
                 }, (resp) => {
                     resp.on("data", (test) => {
-                        
-                        resultset = JSON.parse(test);
-                        try {
-                            saveinDB(resultset, req.query.q, req.query.l);
-                        } catch (error) {
-                            console.log("Fehler beim speichern");
+                        resobject.origin = "pons";
+                        if(!test.includes("!DOCTYPE html")){
+                            resultset = JSON.parse(test);
+                            resobject.value = resultset;
+                            try {
+                                saveinDB(resultset, req.query.q, req.query.l);
+                                res.send(resobject);
+                            } catch (error) {
+                                console.log("Fehler beim speichern");
+                            }
+                        } else {
+                            console.log();
                         }
-                        res.send(resultset);
+                        
+                        
+
                     });
                 });
             } else {
+                resobject.origin = "db";
+                resobject.value = erg;
+                res.send(resobject);
                 console.log("bereits vorhanden");
-                res.send(erg);
             }
             
+            
+
 
         }
     );
@@ -80,10 +92,13 @@ async function saveinDB(json, suchbegriff, suchrichtung){
                 insertHit(hit, lastId, json[0].lang);
             });
         
-            json[1].hits.forEach(hit => {
-                //Sprache 2
-                insertHit(hit, lastId, json[1].lang);
-            });
+            if(json[1] != undefined){
+                json[1].hits.forEach(hit => {
+                    //Sprache 2
+                    insertHit(hit, lastId, json[1].lang);
+                });
+            }
+            
 
 
 
@@ -95,7 +110,6 @@ async function saveinDB(json, suchbegriff, suchrichtung){
 }
 
 function insertHit(hit, parentId, lang){
-    console.log(parentId);
     var lastId = 0;
     connection.execute(
         'Insert into `hit` (`language`, `type`, `opendict`, `Hit_Req_Id`) values (?,?,?,?)',
