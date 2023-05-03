@@ -45,6 +45,11 @@
     </div>
 
     <div class="column">
+      <button mat-fab color="accent" aria-label="Send" (click)="learn()">
+        <mat-icon>learn</mat-icon>
+      </button>
+
+    <div class="column">
       <button mat-fab color="primary" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided>
         <mat-icon>language</mat-icon>
       </button>
@@ -60,7 +65,15 @@
     <mat-card-title>{{listHeader}}</mat-card-title>
     <mat-card-content>
       <mat-list role="list">
-        <mat-list-item class="list-item" role="listitem" *ngFor="let item of responseWords">{{item.description}}</mat-list-item>
+        <mat-list-item class="list-item" role="listitem" *ngFor="let item of responseWords">
+          <div class = "list_word">
+           <img alt="" class="img" [src]="selectedLanguageFromItem.flag" height="25">{{item.word}}
+          </div>
+          <div class = "list_icon"> <mat-icon>compare_arrows</mat-icon></div>
+          <div class = "list_trans">
+           <img alt="" class="img" [src]="selectedLanguageToItem.flag" height="25">{{item.description}}
+          </div>
+        </mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>

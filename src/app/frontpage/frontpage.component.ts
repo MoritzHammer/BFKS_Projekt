@@ -30,8 +30,10 @@ export class Frontpage implements OnInit {
 
   languagesTo: Language[] = this.getLanguages();
   selectedLanguageTo: Language;
+  selectedLanguageToItem: Language;
   languagesFrom: Language[] = this.getLanguages();
   selectedLanguageFrom: Language;
+  selectedLanguageFromItem: Language;
 
   wordFromPons = true;
   allInfoProvided = false;
@@ -94,9 +96,19 @@ export class Frontpage implements OnInit {
     if (this.autocompletionField.value != "" && this.selectedLanguageFrom.name != "" && this.selectedLanguageTo.name != "") this.allInfoProvided = true;
   }
 
+  learn() {
+    const fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
+    this.Api("/lernfeld?l=" + fromto);
+    this.listHeader = "Learning '" + this.selectedLanguageTo.name + ":";
+
+  }
+
   send() {
-    this.Api();
+    const fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
+    this.Api("?/requestq=" + this.autocompletionField.value + "&l=" + fromto);
     this.listHeader = "Translation of '" + this.autocompletionField.value + "' in " + this.selectedLanguageTo.name + ":";
+    this.selectedLanguageToItem = this.selectedLanguageTo;
+    this.selectedLanguageFromItem = this.selectedLanguageFrom;
   }
 
   clear() {
@@ -107,13 +119,8 @@ export class Frontpage implements OnInit {
   }
 
 
-  Api() {
-      //TODO: Send all parameters to the api
-      //TODO: Parse api response and get relevant info
-      const fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
-      const endpoint = "?q=" + this.autocompletionField.value + "&l=" + fromto;
-
-      this.http.get<any>("http://localhost:3000/request" + endpoint).subscribe((result) => {
+  Api(endpoint: string) {
+      this.http.get<any>("http://localhost:3000" + endpoint).subscribe((result) => {
       this.response = result;
       this.DatabaseOrPons();
     })
@@ -124,25 +131,32 @@ export class Frontpage implements OnInit {
     if (this.response.origin == "db"){
       this.DataBaseParsing();
     }
-    else this.PonsParsing();
+    else if (this.response.origin == "db"){
+      this.PonsParsing();
+    }
+    else this.LearnParsing();
   }
 
   DataBaseParsing(){
     this.responseWords = [];
     let values = this.response.value;
     values.forEach(element => {
+      console.log(element.target);
       let word: Word = 
-      { word: element.word, 
+      { word: element.word.replaceAll("(?i)<td[^>]*>", " ").replaceAll("\\s+", " ").replaceAll(/(<([^>]+)>)/gi, '').trim(), 
         lang: element.transdir,
-        description: element.target.replaceAll("(?i)<td[^>]*>", " ").replaceAll("\\s+", " ").trim()
+        description: element.target.replaceAll("(?i)<td[^>]*>", " ").replaceAll("\\s+", " ").replaceAll(/(<([^>]+)>)/gi, '').trim()
       }
       this.responseWords.push(word);
     });
   }
 
   PonsParsing(){
-    console.log(this.response);
+    this.send();
+  }
 
+  LearnParsing(){
+    console.log(this.response);
   }
 
 }
