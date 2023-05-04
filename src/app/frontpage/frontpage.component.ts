@@ -39,19 +39,11 @@ export class Frontpage implements OnInit {
   autocompletionField = new FormControl('');
 
   languagesTo: Language[] = this.getLanguageOptions();
-  selectedLanguageTo: Language = {
-    name: '',
-    short: '',
-    flag: ''
-  };
+  selectedLanguageTo: Language = this.getNewLanguage();
   selectedLanguageToItem: Language = this.selectedLanguageTo;
 
   languagesFrom: Language[] = this.getLanguageOptions();
-  selectedLanguageFrom: Language = {
-    name: '',
-    short: '',
-    flag: ''
-  };
+  selectedLanguageFrom: Language = this.getNewLanguage();
   selectedLanguageFromItem: Language = this.selectedLanguageFrom;
 
   wordFromPons = false;
@@ -114,6 +106,15 @@ export class Frontpage implements OnInit {
     return words;
   }
 
+  getNewLanguage(): Language {
+    let language: Language = {
+      name: '',
+      short: '',
+      flag: ''
+    };
+    return language;
+  }
+
   checkAllInfo() {
     if (this.autocompletionField.value != "" && this.selectedLanguageFrom.name != '' && this.selectedLanguageTo.name != '') { this.allInfoProvided = true; this.languageInfoProvided = true }
     else if (this.selectedLanguageFrom.name != '' && this.selectedLanguageTo.name != '') this.languageInfoProvided = true;
@@ -145,8 +146,8 @@ export class Frontpage implements OnInit {
 
   buttonClear() {
     this.allInfoProvided = false;
-    this.selectedLanguageFrom.name = "";
-    this.selectedLanguageTo.name = "";
+    this.selectedLanguageFrom = this.getNewLanguage();
+    this.selectedLanguageTo = this.getNewLanguage();
     this.autocompletionField.setValue("");
   }
 
