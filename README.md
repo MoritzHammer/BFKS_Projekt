@@ -1,7 +1,7 @@
 # BFKS_Projekt
 
-# HOW TO START PROJECT
- - in CMD
+# HOW TO start project
+ - in CMD:
   - npm install
   - ng serve
   - node server.js
