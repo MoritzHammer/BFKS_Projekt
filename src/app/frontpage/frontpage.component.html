@@ -58,12 +58,12 @@
 
   <div class="column">
     <button mat-fab class="green" aria-label="Send" (click)="buttonSend()" [disabled]=!allInfoProvided
-      matTooltip="Translate word">
+      matTooltip="Translate {{autocompletionField.value}} to {{selectedLanguageTo.name}}">
       <mat-icon>g_translate</mat-icon>
     </button>
 
     <button mat-fab color="primary" aria-label="Send" (click)="buttonLearn()" [disabled]=!languageInfoProvided
-      matTooltip="Learn language (Pick both languages)">
+      matTooltip="Learn {{selectedLanguageTo.name}}">
       <mat-icon>compare_arrows</mat-icon>
     </button>
 

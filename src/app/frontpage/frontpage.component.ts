@@ -98,10 +98,11 @@ export class Frontpage implements OnInit {
   getSavedWordsForAutocompletion() {
     let words: string[] = [];
     this.http.get<any>("http://localhost:3000/autocomplete").subscribe((result) => {
-      result.forEach(element => {
-        words.push(element.word);
-        this.dataBaseResponses.push(element.word);
+        result.forEach(element => {
+        if (!words.includes(element.word)) words.push(element.word);
       });
+      this.dataBaseResponses = words;
+      
     })
     return words;
   }
@@ -123,7 +124,7 @@ export class Frontpage implements OnInit {
   buttonLearn() {
     let fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
     this.Api("/lernfeld?l=" + fromto);
-    this.listHeader = "Learning " + this.selectedLanguageTo.name + ":";
+    this.listHeader = "Learn " + this.selectedLanguageFrom.name + " to " + this.selectedLanguageTo.name + ":";
     this.selectedLanguageToItem = this.selectedLanguageTo;
     this.selectedLanguageFromItem = this.selectedLanguageFrom;
     this.isLearn = true;
