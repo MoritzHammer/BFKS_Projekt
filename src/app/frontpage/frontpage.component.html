@@ -54,17 +54,17 @@
   </div>
 
   <div class="column">
-    <button mat-fab class="green" aria-label="Send" (click)="send()" [disabled]=!allInfoProvided
+    <button mat-fab class="green" aria-label="Send" (click)="buttonSend()" [disabled]=!allInfoProvided
       matTooltip="Translate word">
       <mat-icon>g_translate</mat-icon>
     </button>
 
-    <button mat-fab color="primary" aria-label="Send" (click)="learn()" [disabled]=!languageInfoProvided
+    <button mat-fab color="primary" aria-label="Send" (click)="buttonLearn()" [disabled]=!languageInfoProvided
       matTooltip="Learn language (Pick both languages)">
       <mat-icon>compare_arrows</mat-icon>
     </button>
 
-    <button mat-fab color="warn" aria-label="Clear" (click)="clear()" matTooltip="Clear fields">
+    <button mat-fab color="warn" aria-label="Clear" (click)="buttonClear()" matTooltip="Clear fields">
       <mat-icon>clear</mat-icon>
     </button>
   </div>
@@ -106,7 +106,7 @@
           
           <mat-form-field class="learn_form_field">
             <mat-label>{{item.word.word}}</mat-label>
-            <input matInput type="text" [(ngModel)]="item.learn.input" (input)="ChangeItem($event, item)">
+            <input matInput type="text" [(ngModel)]="item.learn.input" (input)="ChangeLearnItem($event, item)" [disabled]="item.learn.right">
           </mat-form-field>
 
           <div class="list_icon">

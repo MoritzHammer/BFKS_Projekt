@@ -13,7 +13,8 @@ interface Word {
 
 interface Learning {
   input: string,
-  icon: string
+  icon: string,
+  right: boolean
 }
 
 interface LearnWords {
@@ -37,7 +38,7 @@ export class Frontpage implements OnInit {
     
   autocompletionField = new FormControl('');
 
-  languagesTo: Language[] = this.getLanguages();
+  languagesTo: Language[] = this.getLanguageOptions();
   selectedLanguageTo: Language = {
     name: '',
     short: '',
@@ -45,7 +46,7 @@ export class Frontpage implements OnInit {
   };
   selectedLanguageToItem: Language = this.selectedLanguageTo;
 
-  languagesFrom: Language[] = this.getLanguages();
+  languagesFrom: Language[] = this.getLanguageOptions();
   selectedLanguageFrom: Language= {
     name: '',
     short: '',
@@ -69,7 +70,7 @@ export class Frontpage implements OnInit {
     filteredOptions!: Observable<string[]>;
   
     ngOnInit() {
-      this.dataBaseResponses = this.getDatabaseResponseWords();
+      this.dataBaseResponses = this.getSavedWordsForAutocompletion();
       this.autocompletion = this.dataBaseResponses;
       this.filteredOptions = this.autocompletionField.valueChanges.pipe(
         startWith(''),
@@ -84,7 +85,7 @@ export class Frontpage implements OnInit {
       return this.autocompletion.filter(option => option.toLowerCase().includes(filterValue));
     }
 
-  getLanguages(): Language[] {
+  getLanguageOptions(): Language[] {
       let languages: Language[] = [
         { name: "German", short: "de", flag:"https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg" },
         { name: "English", short: "en", flag: "https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg" },
@@ -102,7 +103,7 @@ export class Frontpage implements OnInit {
       return languages;
     }
 
-  getDatabaseResponseWords() {
+  getSavedWordsForAutocompletion() {
     let words: string[] = [];
     this.http.get<any>("http://localhost:3000/autocomplete").subscribe((result) => {
       result.forEach(element => {
@@ -118,7 +119,7 @@ export class Frontpage implements OnInit {
     else if (this.selectedLanguageFrom.name != '' && this.selectedLanguageTo.name != '' ) this.languageInfoProvided = true;
   }
 
-  learn() {
+  buttonLearn() {
     let fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
     this.Api("/lernfeld?l=" + fromto);
     this.listHeader = "Learning " + this.selectedLanguageTo.name + ":";
@@ -131,7 +132,7 @@ export class Frontpage implements OnInit {
 
   }
 
-  send() {
+  buttonSend() {
     let fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
     this.Api("/request?q=" + this.autocompletionField.value + "&l=" + fromto);
     this.listHeader = "Translation of '" + this.autocompletionField.value + "' in " + this.selectedLanguageTo.name + ":";
@@ -139,9 +140,10 @@ export class Frontpage implements OnInit {
     this.selectedLanguageFromItem = this.selectedLanguageFrom;
     this.wordFromPons = true;
     this.isLearn = false;
+    this.getSavedWordsForAutocompletion();
   }
 
-  clear() {
+  buttonClear() {
     this.allInfoProvided = false;
     this.selectedLanguageFrom.name = "";
     this.selectedLanguageTo.name = "";
@@ -152,12 +154,12 @@ export class Frontpage implements OnInit {
   Api(endpoint: string) {
       this.http.get<any>("http://localhost:3000" + endpoint).subscribe((result) => {
       this.response = result;
-      this.DatabaseOrPons();
+      this.parsingDecision();
     })
 
   }
 
-  DatabaseOrPons(){
+  parsingDecision(){
     if (this.response.origin == "db"){
       this.DataBaseParsing();
       this.wordFromPons = true;
@@ -213,7 +215,8 @@ export class Frontpage implements OnInit {
       }
       let learn: Learning = {
         input: "",
-        icon: "clear"
+        icon: "clear",
+        right: false
       }
       this.learnWords.push({word: word, learn: learn});
       this.responseWords.push(word);
@@ -221,11 +224,15 @@ export class Frontpage implements OnInit {
     if(this.learnWords.length == 0) this.listHeader = "No data in database. Please search for words in that languages";
   }
 
-  ChangeItem(event: any, item:LearnWords){
+  ChangeLearnItem(event: any, item:LearnWords){
       if (item.word.description.toLowerCase() == item.learn.input.toLowerCase()){
             item.learn.icon = "done";
+            item.learn.right = true;
           }
-      else item.learn.icon = "clear";
+      else {
+        item.learn.icon = "clear";
+        item.learn.right = false;
+      }
   }
 
 }
