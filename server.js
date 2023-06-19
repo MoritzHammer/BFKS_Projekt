@@ -71,24 +71,28 @@ app.get("/request", (req, res) => {
                         },
                         method: "GET"
                     }, (resp) => {
+                        var chunks = "";
                         resp.on("data", (test) => {
+                            
                             resobject.origin = "pons";
                             if (!test.includes("!DOCTYPE html")) {
-                                resultset = JSON.parse(test);
-                                resobject.value = resultset;
-                                try {
-                                    saveinDB(resultset, req.query.q, req.query.l);
-                                    res.send(resobject);
-                                } catch (error) {
-                                    console.log("Fehler beim speichern");
-                                }
+                                // console.log(test);
+                                chunks += test;  
                             } else {
                                 console.log();
                             }
-
-
-
                         });
+
+                        resp.on("end", () => {
+                            resultset = JSON.parse(chunks);
+                            resobject.value = resultset;
+                            try {
+                                saveinDB(resultset, req.query.q, req.query.l);
+                                res.send(resobject);
+                            } catch (error) {
+                                console.log("Fehler beim speichern");
+                            }
+                        })
                     });
                 } else {
 
