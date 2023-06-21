@@ -55,13 +55,11 @@ app.get("/request", (req, res) => {
         function (err, results, fields) {
             erg = results;
             if (err != undefined) {
-                console.log(err);
                 res.status(500).send('Internal Server Error')
             } else {
 
                 var resobject = {}
                 if (erg.length == 0) {
-                    console.log("Lang" + req.query.l + " word: " + req.query.q + " source: " + req.query.in);
                     https.get({
                         hostname: "api.pons.com",
                         port: 443,
@@ -84,10 +82,8 @@ app.get("/request", (req, res) => {
 
                         resp.on("end", () => {
                             try {
-                                console.log(chunks.toString());
                                 resultset = JSON.parse(chunks);
                             } catch (error) {
-                                console.log(error);
                                 res.status(500).send('Error Parsing Pons Json');
                                 return;
                             }

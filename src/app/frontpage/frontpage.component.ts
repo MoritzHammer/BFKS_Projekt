@@ -208,8 +208,9 @@ export class Frontpage implements OnInit {
 
   PonsParsing() {
     this.responseWords.length = 0;
-    let arabs = this.response.value[0].hits[0].roms[0].arabs;
-    arabs.forEach(element => {
+    let arabs = this.response.value[0].hits.forEach(hit => {  
+      hit.roms.forEach(rom => {
+      rom.arabs.forEach(element => {
       let word: Word =
       {
         word: element.translations[0].source,
@@ -218,6 +219,8 @@ export class Frontpage implements OnInit {
       }
       this.responseWords.push(word);
     });
+    });
+  });
   }
 
   LearnParsing() {
