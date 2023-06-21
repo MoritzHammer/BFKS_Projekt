@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { Observable, ObservableInput, throwError } from 'rxjs';
+import { catchError, first, map, startWith } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 
 interface Word {
@@ -135,8 +135,7 @@ export class Frontpage implements OnInit {
   }
 
   buttonSend() {
-    let fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
-    this.Api("/request?q=" + this.autocompletionField.value + "&l=" + fromto);
+    this.Api("/request?q=" + this.autocompletionField.value);
     this.listHeader = "Translation of '" + this.autocompletionField.value + "' in " + this.selectedLanguageTo.name + ":";
     this.selectedLanguageToItem = this.selectedLanguageTo;
     this.selectedLanguageFromItem = this.selectedLanguageFrom;
@@ -154,11 +153,25 @@ export class Frontpage implements OnInit {
 
 
   Api(endpoint: string) {
-    this.http.get<any>("http://localhost:3000" + endpoint).subscribe((result) => {
-      this.response = result;
-      this.parsingDecision();
-    })
+    let fromto = "" + this.selectedLanguageFrom.short + this.selectedLanguageTo.short + "";
+    let otherdir = "" + this.selectedLanguageTo.short + this.selectedLanguageFrom.short + "";
 
+    this.http.get<any>("http://localhost:3000" + endpoint + "&language=" + this.selectedLanguageTo.short + "&in=" + this.selectedLanguageFrom.short + "&l=" + fromto)
+    .pipe(first()).subscribe(
+      (result) => {
+        this.response = result;
+        this.parsingDecision();
+      },
+      (error) => {
+        this.http.get<any>("http://localhost:3000" + endpoint + "&language=" + this.selectedLanguageTo.short + "&in=" + this.selectedLanguageFrom.short + "&l=" + otherdir)
+        .pipe(first()).subscribe(
+          (result) => {
+            this.response = result;
+            this.parsingDecision();
+          }
+        )
+      }
+    );
   }
 
   parsingDecision() {

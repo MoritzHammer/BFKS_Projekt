@@ -61,10 +61,11 @@ app.get("/request", (req, res) => {
 
                 var resobject = {}
                 if (erg.length == 0) {
+                    console.log("Lang" + req.query.l + " word: " + req.query.q + " source: " + req.query.in);
                     https.get({
                         hostname: "api.pons.com",
                         port: 443,
-                        path: "/v1/dictionary?l=" + req.query.l + "&q=" + req.query.q,
+                        path: "/v1/dictionary?language=" + req.query.language + "&q=" + req.query.q + "&in=" + req.query.in + "&l=" + req.query.l,
                         headers: {
                             "x-secret": "44a56a7bfbed28e96c5d6467a08057951705c120acc74934ae1d0a6f0f677fa1",
                             "Access-Control-Allow-Origin": "*"
@@ -73,18 +74,23 @@ app.get("/request", (req, res) => {
                     }, (resp) => {
                         var chunks = "";
                         resp.on("data", (test) => {
-                            
+                            console.log(test.toString());
                             resobject.origin = "pons";
                             if (!test.includes("!DOCTYPE html")) {
                                 // console.log(test);
                                 chunks += test;  
-                            } else {
-                                console.log();
                             }
                         });
 
                         resp.on("end", () => {
-                            resultset = JSON.parse(chunks);
+                            try {
+                                console.log(chunks.toString());
+                                resultset = JSON.parse(chunks);
+                            } catch (error) {
+                                console.log(error);
+                                res.status(500).send('Error Parsing Pons Json');
+                                return;
+                            }
                             resobject.value = resultset;
                             try {
                                 saveinDB(resultset, req.query.q, req.query.l);
